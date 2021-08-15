@@ -1,10 +1,13 @@
 package main
 
-import "log"
+import (
+	"log"
+	"sort"
+)
 
 type User struct {
 	FirstName string
-	LastName string
+	LastName  string
 }
 
 func main() {
@@ -18,12 +21,12 @@ func main() {
 
 	anotherMap := make(map[string]User)
 
-	robinson := User {
+	robinson := User{
 		FirstName: "Robinson",
-		LastName: "Crusoe",
+		LastName:  "Crusoe",
 	}
 
-	father := User {
+	father := User{
 		FirstName: "Kreutznaer",
 	}
 
@@ -31,4 +34,23 @@ func main() {
 	anotherMap["Second"] = father
 
 	log.Println(anotherMap["First"], anotherMap["Second"])
+
+	// Slices are lists
+	var mySlice []string
+
+	mySlice = append(mySlice, "The widow")
+	mySlice = append(mySlice, "The Spaniard")
+	mySlice = append(mySlice, "Portuguese Sea Captain")
+
+	log.Println(mySlice)
+
+	// Another way to create slice
+	intSlice := []int{3, 1, 11, -8, 4, 32}
+	log.Println("Slice", intSlice)
+
+	sort.Ints(intSlice)
+	log.Println("Sorted Slice", intSlice)
+
+	// Only the first 3 numbers from "intSlice"
+	log.Println("First 3 numbers", intSlice[0:3])
 }
