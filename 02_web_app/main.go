@@ -13,7 +13,7 @@ func Home(rw http.ResponseWriter, r *http.Request) {
 // About is the about page handler
 func About(rw http.ResponseWriter, r *http.Request) {
 	sum := addValues(2, 3)
-	_, _ = fmt.Fprintf(rw, fmt.Sprintf("This is the about page and 2 + 3 is %d.", sum))
+	_, _ = fmt.Fprintf(rw, "This is the about page and 2 + 3 is %d.", sum)
 
 }
 
@@ -23,7 +23,7 @@ func addValues(x, y int) int {
 }
 
 // When a function or variable name begins with a capital letter, it means it is accessible outside the given package
-// When a function or variable name begins with a capital letter, it means the func/var is private
+// When a function or variable name begins with a small letter, it means the func/var is private
 
 func main() {
 	http.HandleFunc("/", Home)
