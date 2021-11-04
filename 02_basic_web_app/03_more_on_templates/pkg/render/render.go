@@ -1,8 +1,10 @@
 package render
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"path/filepath"
 )
@@ -11,21 +13,29 @@ var functions = template.FuncMap{} // This will allow us to create our own funct
 
 // RenderTemplate renders templates using html/template
 func RenderTemplate(rw http.ResponseWriter, tmpl string) {
-	_, err := RenderTemplateTest(rw)
+	tc, err := CreateTemplateCache()
 	if err != nil {
-		fmt.Println("Error getting template cache:", err)
+		log.Fatal(err)
 	}
 
-	parsedTemplate, _ := template.ParseFiles("./templates/" + tmpl)
+	t, ok := tc[tmpl]
+	if !ok {
+		log.Fatal(err)
+	}
 
-	err = parsedTemplate.Execute(rw, nil)
+	buf := new(bytes.Buffer)
+
+	_ = t.Execute(buf, nil)
+
+	_, err = buf.WriteTo(rw)
 
 	if err != nil {
-		fmt.Println("error parsing template:", err)
+		fmt.Println("error writing template to browser:", err)
 	}
 }
 
-func RenderTemplateTest(rw http.ResponseWriter) (map[string]*template.Template, error) {
+// CreateTemplateCache creates a template cache as a map
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{} // map of string -> *Template
 
 	// Get file-names in "templates" folder matching "*.page.tmpl"
@@ -36,8 +46,6 @@ func RenderTemplateTest(rw http.ResponseWriter) (map[string]*template.Template, 
 
 	for _, page := range pages {
 		name := filepath.Base(page) // Extract the filename from the entire path
-
-		fmt.Println("Page is currently", page)
 
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
 		if err != nil {
