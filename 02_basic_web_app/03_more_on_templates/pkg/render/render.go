@@ -7,27 +7,33 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/kmrgaurav11235/goweb/more_on_templates/pkg/config"
 )
 
 var functions = template.FuncMap{} // This will allow us to create our own functions and pass them to the template
 
+var app *config.AppConfig
+
+// NewTemplates sets the config for the render package
+func NewTemplates(a *config.AppConfig) {
+	app = a
+}
+
 // RenderTemplate renders templates using html/template
 func RenderTemplate(rw http.ResponseWriter, tmpl string) {
-	tc, err := CreateTemplateCache()
-	if err != nil {
-		log.Fatal(err)
-	}
+	tc := app.TemplateCache
 
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Could not get template from template cache")
 	}
 
 	buf := new(bytes.Buffer)
 
 	_ = t.Execute(buf, nil)
 
-	_, err = buf.WriteTo(rw)
+	_, err := buf.WriteTo(rw)
 
 	if err != nil {
 		fmt.Println("error writing template to browser:", err)
