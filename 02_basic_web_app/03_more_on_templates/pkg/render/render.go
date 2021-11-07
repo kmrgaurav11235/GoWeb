@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/kmrgaurav11235/goweb/more_on_templates/pkg/config"
+	"github.com/kmrgaurav11235/goweb/more_on_templates/pkg/models"
 )
 
 var functions = template.FuncMap{} // This will allow us to create our own functions and pass them to the template
@@ -20,8 +21,13 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
+func AddDedafultData(td *models.TemplateData) *models.TemplateData {
+	// We can add some default template data here
+	return td
+}
+
 // RenderTemplate renders templates using html/template
-func RenderTemplate(rw http.ResponseWriter, tmpl string) {
+func RenderTemplate(rw http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -37,7 +43,9 @@ func RenderTemplate(rw http.ResponseWriter, tmpl string) {
 
 	buf := new(bytes.Buffer)
 
-	_ = t.Execute(buf, nil)
+	td = AddDedafultData(td)
+
+	_ = t.Execute(buf, td)
 
 	_, err := buf.WriteTo(rw)
 

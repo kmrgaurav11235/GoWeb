@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/kmrgaurav11235/goweb/more_on_templates/pkg/config"
+	"github.com/kmrgaurav11235/goweb/more_on_templates/pkg/models"
 	"github.com/kmrgaurav11235/goweb/more_on_templates/pkg/render"
 )
 
@@ -29,10 +30,17 @@ func NewHandlers(r *Repository) {
 
 // Home is the home page handler
 func (m *Repository) Home(rw http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(rw, "home.page.tmpl")
+	render.RenderTemplate(rw, "home.page.tmpl", &models.TemplateData{}) // For now, we are passing empty TemplateData
 }
 
 // About is the about page handler
 func (m *Repository) About(rw http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(rw, "about.page.tmpl")
+	// perform some logic
+	stringMap := make(map[string]string)
+	stringMap["Test"] = "Hello again."
+
+	// send the data to the template
+	render.RenderTemplate(rw, "about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
